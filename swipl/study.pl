@@ -1,0 +1,36 @@
+% fact :- rule (rule da manzok fact ga saslie
+% woman(mia).
+% woman(jody).
+% woman(yolanda).
+%
+% loves(vincent, mia).
+% loves(marsellus, mia).
+% loves(pumpkin, honey_bunny).
+% loves(honey_bunny,pupkin).
+%  unification = bind, bind a varieable with '=' like =
+%
+% f(a).
+% f(b).
+%
+% g(a).
+% g(b).
+%
+% h(b).
+%
+% k(X) :- f(X), g(X), h(X).
+%
+% recursion is zaegui hamsu
+
+
+descend(X, Y) :- child(X,Y).
+% descend(X, Y) :- child(X,Z), child(Z,Y).
+descend(X, Y) :- child(X,Z), descend(Z,Y).
+
+child(anne, briget).
+child(briget, caroline).
+child(caroline, donna).
+child(donna, emily).
+
+
+
+

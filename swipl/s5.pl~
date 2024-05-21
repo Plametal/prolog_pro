@@ -1,0 +1,60 @@
+warm_blooded(penguin).
+warm_blooded(human).
+
+produce_milk(penguin).
+produce_milk(human).
+
+have_feather(penguin).
+have_hair(human).
+
+mammal(X) :-
+    warm_blooded(X),
+    produce_milk(X),
+    have_hair(X).
+
+parent(albert, bob).
+parent(albert, betsy).
+parent(albert, bill).
+
+parent(alice, bob).
+parent(alice, betsy).
+parent(alice, bill).
+
+parent(bob, carl).
+parent(bob, charlie).
+
+related(X, Y) :-
+    parent(X, Y).
+
+related(X, Y) :-
+    parent(X, Z),
+    related(Z, Y).
+
+
+double_digit(X, Y) :-
+    Y is X*2.
+
+print :-
+    random(0,10,X),
+    write(X).
+
+h :-
+    write('awdadwadwad'), nl.
+
+is_even(X) :-
+    Y is X//2, X =:= 2 * Y.
+
+% sqrt, sin, cos, tan, asin, atan, atan2, sinh,
+% asinh, acosh, atanh, log, log10, exp, pi, e
+
+say_hi :-
+    write('What is your name? '),
+    read(X),
+    write('Hi '),
+    write(X).
+
+fav_char :-
+    write('What is your fav character? '),
+    get(X), % ascii save
+    format('The Ascii value ~w is ', [X]),
+    put(X), nl.

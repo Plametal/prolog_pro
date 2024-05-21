@@ -1,0 +1,10 @@
+loves(romeo, juliet).
+
+loves(juliet, romeo) :- loves(romeo, juliet).
+
+happy(albert).
+happy(alice).
+happy(bob).
+happy(bill).
+with_albert(alice).
+

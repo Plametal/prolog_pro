@@ -1,0 +1,294 @@
+1.
+ Atom(상수): string과 비슷한 상수, 소문자로 시작해야함.
+ 문자, 숫자, 언더바. 작은 따옴표에 갇힌 데이터로 나타남
+ ex) dog, "hi~~~~", big_burger
+
+ Number(상수): 숫자 상수 ex) 1, 100, 12, 0.9
+
+ Variables(변수): 변수다. 대문자 시작
+
+ Fact(서술자) : ~는 ~다.
+  - woman(mia). : mia는 woman이다.
+ - playsAirGuitar(jody). : jody는 playsAirGuitar를 한다.
+ - party. : party라는 상수가 존재
+ consult를 통해 위의 Fact에 대해 질의 가능 (true, false 반환)
+
+ Rule(규칙) =>     머리 :- 몸     (몸 부분들이 참이면 머리도 참)
+ - listen2Music(yolanda) :- happy(yolanda). => 몸인 happy가 참이면 li~도 참이다
+
+ 프롬프트로 변수 질문
+ - woman(X). 로 질문 woman에 대한 fact들을 알려줌
+ - loves(mia, X). 로 질문, 이 관계에 대한 fact 알려줌 (순서 중요함. 바꾸면 안됨)
+ ; 다음 상수 받기
+--------------------------------------------------------------------------------------
+2.
+ Unification : 할당
+
+ Recursion : 재귀함수
+	descend(X, Y) :- child(X, Y).
+	descend(X, Y) :- child(X, Z),
+			   descend(Z, Y).
+---------------------------------------------------------------------------------------
+3.
+ list: atom, number, 변수, 서술자 등 요소들을 담음
+ex)
+	[mia, vin, jules, yolan]
+	[mia, robber(bunny), X, 2]
+	[]
+	[mia, [vin, chan], [jatm\, girl(jat)]]
+	[[], dead(X), [[1,2], 3]]
+ 리스트 구성: head, tail로 나눔
+  - head = 리스트 가장 앞 원소
+    - tail = head를 뺀 나머지
+        [mia, c, X, 123] : mia가 헤드, 나머지는 tail
+?- [Head|Tail] = [mia, qwe, chan, vin].
+Head = mia,
+Tail = [qwe, chan, vin].
+
+?- [Head|Til] = [mia, qwe, chan, vin].
+Head = mia,
+Til = [qwe, chan, vin].
+
+?- [X,Y,Z|Q] = [mia, qwe, chan, vin].
+X = mia,
+Y = qwe,
+Z = chan,
+Q = [vin].
+
+ 변수를 넣고 각 부분에 대해 알려줌. |를 기준으로 오른쪽인 테일은 리스트로 보여줌
+
+ 익명 변수 _  :  존재만 확인함. 건너뛰기 쌉가능
+
+?- [X,_,Z|T] = [mia,A,b,12,hi].
+X = mia,
+Z = b,
+T = [12, hi]
+  
+
+ member함수: 리스트에 있는지 확인
+?- member(mia, [mia, A, b, 12, hi]).
+true ;
+A = mia ;
+false.
+
+-----------------------------------------------------------------------------------
+4.
+ = 대입 연산, 객체비교
+?- X = 44/11.    대입
+X = 44/11.
+
+?- 1=1.
+true.
+
+?- 14 = 6+8.      (객체 비교라서  false, 같은 객체가 아니다.)
+false.
+
+?- A=A.
+true.
+
+
+ is 대입, 산술연산 질의
+
+?- 14 is 6+8.		질의
+true.
+
+?- 1 is mod(7,2).	나머지 연산 mod에 대한 질의
+true.
+
+?- X is 100-65.		X값 구함. (대입?)
+X = 35.
+
+주의: 왼쪽에 수식 넣으면 에러, 오른쪽에 인스턴스화 안된 변수 오면 에러
+-----------------------------------------------------------------------------------------
+터미널 명령어
+개행  :  nl
+write : 쓰기
+listing(). : 사실 관계들 목록 출력
+pl 파일은 db 느낌쓰
+male(X), female(Y). :가능한 모든 조합을 보여줬다.
+
+
+?- X is 2 +2.
+X = 4.
+
+?- X is 3 + (2 * 20).
+X = 43.
+
+?- 50 > 30.
+true.
+
+?- (3*10) >= (50/2).
+true.
+
+?- \+ (3=10).
+true.
+
+?- 5+4 =:= 4+5.
+true.
+
+?- 5+4 =\= 4+5.
+false.
+
+?- 5 > 10; 10 < 100.
+true.
+
+?- X is mod(7,2).
+X = 1.
+
+?- random(0,10,X).
+X = 0.
+
+?- between(0,10,X).
+X = 0 ;
+X = 1 ;
+X = 2 ;
+X = 3 ;
+X = 4 ;
+X = 5 ;
+X = 6 ;
+X = 7 ;
+X = 8 ;
+X = 9 ;
+X = 10.
+
+?- succ(2,X).
+X = 3.
+
+?- succ(2,Y).
+Y = 3.
+
+?- X is abs(-8).
+X = 8.
+
+?- X is max(10,5).
+X = 10.
+
+?- X is max(9, 100).s
+X = 100.
+
+?- X is min(1,100).
+X = 1.
+
+?- X is round(10.66).
+X = 11.
+
+?- X is round(9.36).
+X = 9.
+
+?- X is truncate(10.56).
+X = 10.
+
+?- X is floor(10.56).
+X = 10.
+
+?- X is ceiling(10.56).
+X = 11.
+
+
+?- write('You saw, me'), nl, nl.
+You saw, me
+
+true.
+
+?- writeq('I show'), nl.
+'I show'
+true.
+
+
+\= : 두 항이 다름		=\= : 두 숫자식이 다름.
+
+
+?- assertz(friend(benvolio, mercutio)).
+true.
+
+?- asserta(friend(a, b)).
+true.
+
+
+?- retractall(father(X,Y)).
+true.
+
+?- father(X,Y).
+false.
+
+?- retractall(likes(_, dancing)).
+true.
+
+?- likes(X,Y).
+X = remeo,
+Y = juliet ;
+X = juliet,
+Y = romeo.
+
+?- write([albert|[alice, bob]]), nl.
+[albert,alice,bob]
+
+
+?- length([1,2,3], X).
+X = 3.
+
+
+?- [H|T] = [a,b,c].
+H = a,
+T = [b, c].
+
+?- [X1, X2, X3, X4] = [1,b,c,s].
+X1 = 1,
+X2 = b,
+X3 = c,
+X4 = s.
+
+?- [X1, X2, X3, X4|T] = [1,b,c,s].
+X1 = 1,
+X2 = b,
+X3 = c,
+X4 = s,
+T = [].
+
+?- [_, X2, _, _|T] = [a,b,c,d,e].
+X2 = b,
+T = [e].
+
+?- [_, _, [X|Y], _, Z|T] =
+|    [a, b, [c, d, e], f, g, h].
+X = c,
+Y = [d, e],
+Z = g,
+T = [h].
+
+?- List1 = [a,b,c].
+List1 = [a, b, c].
+
+?- member(a, List1).
+List1 = [a|_] ;
+
+?- member(X, [a,b,c,d]).
+X = a ;
+X = b ;
+X = c ;
+X = d.
+
+?- reverse([1,2,3,4,5], X).
+X = [5, 4, 3, 2, 1].
+
+?- append([1,2,3],[4,5,6],X).
+X = [1, 2, 3, 4, 5, 6].
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

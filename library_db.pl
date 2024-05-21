@@ -31,7 +31,7 @@ classification_genre(Genre) :-
 
 %2 book status check
 :- dynamic loan_status/2.
-loan_status(1001, available).
+loan_status(1001, checked_out).
 loan_status(1002, available).
 loan_status(1003, available).
 loan_status(1004, available).
@@ -54,10 +54,11 @@ loan_status_list :-
 % borrower
 borrower_list :-
     borrower(Name, Phone_number, Barcode),
-    format('~w \t ~w \t ~w', [Name, Phone_Number, Barcode]), nl.
+    format('~w \t ~w \t ~w', [Name, Phone_number, Barcode]), nl.
 
 %9 borrower db
 :- dynamic borrower/3.
+borrower('leejaewon', '010-3178-2627', 1001).
 
 
 

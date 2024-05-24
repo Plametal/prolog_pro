@@ -1,0 +1,52 @@
+%1 book db 
+book(Barcode, Title, Author, Genre)
+
+%2 loan_status_db
+loan_status(Barcode, Status)
+
+%3 borrower db
+borrower(Name, Phone_number, Barcode)
+
+%4 making data list (database인데 list라 써버려서 그냥 그대로 씀)
+book_list : 모든 책 출력, book_status 함수(%7)를 통해 출력 (Barcode, Title, Author, Genre, Status)
+loan_status_list: loan_status 데이터베이스(%2)를 활용, 모든 대출 정보 출력(Barcode, Status)
+borrower_list: borrower 데이터베이스(%3)를 활용, 모든 미반납자 출력(Name, Phone_number, Barcode)
+
+%5 title search
+제목 검색 기능, Part에 제목 일부분 저장 후, Title과 비교 후 참인 것들을 book_status(%7) 함수를 통해,
+book_list와 동일한 과정으로 책 정보를 출력한다.(Barcode, Title, Author, Genre, Status)
+
+%6 classification_genre
+장르 검색 기능, 장르를 입력하면, 해당 장르인 책들을 book_status(%7) 함수를 통해,
+book_list와 동일한 과정으로 책 정보를 출력한다.(Barcode, Title, Author, Genre, Status)
+
+%7 book_status
+Barcode를 입력하면, loan_status(%2)와 book(%1)을 통해 각 정보(Barcode, Title, Author, Genre, Status)를 가져온 후, 
+데이터리스트를 구성할 'Barcode: ~w, Title: ~w, Author: ~w, Genre: ~w, Status: ~w' 한 줄을 생성한다.
+
+%8 book_loan
+Name, Phone_number, Barcode 책 대여에 필요한 정보를 기입 후 checkout_book(%9)에 해당 매개변수들을 가져간다.
+
+ %9 checkout_book -1
+loan_status(%2)로 대여가 가능한지 확인(available) 후, loan_status(%2)와 borrwer(%3)의 db 수정
+수정과정
+retract : loan_status(%2)에 기존의 (Barcode, available(대여 가능)) 삭제
+assertz : loan_status(%2)에 새로운 (Barcode,  checked_out(대여  불가)) 생성
+assertz : borrower(%3)에 새로운 대여자 정보 생성(Name, Phone_number, Barcode)
+만약에 해당 %9의 첫 명령문 loan_status를 수행할 때, 두번째인자가 available이 아니라 checked_out이라면
+거짓이되므로 (-1)은 종료되고 (-2)를 실행
+%9-2
+loan_status(%2)로 대여가 불가능한지 확인, 불가능이 확인되면 불가능하다는 메시지 write 출력
+
+%10 return_book
+Barcode를 넣어서 반납, loan_status(%2)를 통해, 미반납 상태인지 확인 후 참이라면, 반납 수행, loan_stauts(%2)와 borrower(%3) db 수정
+수정과정
+retract : loan_status(%2)에 기존의 (Barcode, checked_out(대여 불가)) 삭제
+assertz : loan_status(%2)에 새로운 (Barcode,  available(대여  가능)) 생성
+retract : borrower(%3)에 기존의 대여자 정보 삭제(Name, Phone_number, Barcode)
+
+
+
+
+
+

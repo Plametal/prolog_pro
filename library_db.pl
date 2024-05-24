@@ -1,6 +1,6 @@
 % library_db.pl
 :- module(library_db, [book/4, title_search/1, classification_genre/1,
-                      loan_status/2, book_list/0, loan_status_list/0,
+                      loan_status/2,  loan_status_list/0, book_list/0,
                       borrower_list/0, borrower/3, book_status/1,
                       book_loan/0, checkout_book/3, return_book/1]).
 
@@ -17,13 +17,14 @@ book(1008, 'The Da Vinci Code', 'Dan Brown', 'Thriller').
 book(1009, 'Moby-Dick', 'Herman Melville', 'Adventure').
 book(1010, 'Brave New World', 'Aldous Huxley', 'Dystopian').
 
-%5 title search
-title_search(Title) :-
+%5 title searc
+title_search(Part) :-
     book(Barcode, Title, _, _),
+    sub_string(Title, _, _, _, Part),
     book_status(Barcode).
 
 
-%4 genre search
+%4 genre search,
 classification_genre(Genre) :-
     write('Barcode\tTitle\tAuthor'), nl,
     book(Barcode, Title, Author, Genre),
@@ -44,9 +45,11 @@ loan_status(1010, available).
 
 %3 make data list
 % book
+
 book_list :-
     book(Barcode, Title, Author, Genre),
     format('~w \t ~w \t ~w \t ~w', [Barcode, Title, Author, Genre]), nl.
+
 % loan_status
 loan_status_list :-
     loan_status(Barcode, Status),
@@ -58,15 +61,15 @@ borrower_list :-
 
 %9 borrower db
 :- dynamic borrower/3.
-borrower('leejaewon', '010-3178-2627', 1001).
+borrower('leejaewon', '010-1234-5678', 1001).
 
 
 
 %6 book loan check
 book_status(Barcode) :-
     loan_status(Barcode, Status),
-    book(Barcode, Title, _, _),
-    format('Barcode: ~w, Title: ~w, Status: ~w', [Barcode, Title, Status]).
+    book(Barcode, Title, Author, Genre),
+    format('Barcode: ~w, Title: ~w, Author: ~w, Genre: ~w, Status: ~w', [Barcode, Title, Author, Genre, Status]), nl.
 
 
 %7 book loan

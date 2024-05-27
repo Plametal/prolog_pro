@@ -19,16 +19,11 @@ server(Port) :-
 
 
 :- use_module(library(http/http_session)).
-/*
-:- http_handler(root(login_page), login_page, []).
-:- http_handler(root(login), login, []).
-:- http_handler('/logout', logout_handler, []).
-*/
-% :- http_handler(root(add_book_handler), checkout_handler, []).
 :- http_handler(root(checkout_handler_book), checkout_handler_book, []).
 
 :- use_module(library(http/html_head)).
 
+:- http_handler(root(title_search_0), title_search_0, []).
 
 
 :- dynamic post/3.
@@ -143,84 +138,6 @@ posts_table_rows([post(Title, Author, _Message)|Rest]) -->
     posts_table_rows(Rest).
 
 
-/*
-
-% Define dynamic predicate to store posts
-
-% HTTP handler for the search page
-% HTTP handler for the search page
-search(Request):-
-    http_parameters(Request, [title(Title, [default('None')]), author(Author, [default('None')])], [form_data('')]),
-    (
-        (Title = 'None'; Author = 'None')
-        ->  reply_html_page(
-                title('Book Bulletin Board'),
-                [
-                    h1('Book Bulletin Board'),
-                    div(id(board), []),
-                    h2('Please provide both title and author.'),
-                    form([action='/checkout_handler', method='POST'],
-                        [
-                            label([for('title')], 'Title: '),
-                            input([type(text), id(title), name(title)]),
-                            label([for('author')], 'Author: '),
-                            input([type(text), id(author), name(author)]),
-                            input([type(submit), value('Add Book')])
-                        ]),
-                    div(id(posts), []),
-                    p(a([href('/')], 'Return to Root'))
-                ]
-            )
-        ;   reply_html_page(
-                title('Book Bulletin Board'),
-                [
-                    h1('Book Bulletin Board'),
-                    div(id(board), []),
-                    form([action='/checkout_handler', method='POST'],
-                        [
-                            label([for('title')], 'Title: '),
-                            input([type(text), id(title), name(title)]),
-                            label([for('author')], 'Author: '),
-                            input([type(text), id(author), name(author)]),
-                            input([type(submit), value('Add Book')])
-                        ]),
-                    div(id(posts), [])
-                ]
-            )
-    ).
-
-% HTTP handler to handle the checkout (adding a book)
-checkout_handler(Request) :-
-    http_parameters(Request, [title(Title, []), author(Author, [])]),
-    assertz(post(Title, Author, 'New book added!')),
-    print_posts_table, % Print the updated posts table
-    print_html_string('<form action="http://user_recommend" method="POST">~n<input type="submit" value="Go to User Recommend"></form>').
-
-% Print the table of posts
-print_posts_table :-
-    findall(post(Title, Author, _Message), post(Title, Author, _Message), Posts),
-    reply_html_page(
-        title('Book Bulletin Board'),
-        [
-            h2('Book Posts'),
-            table(id(posts_table), [
-                \posts_table_header,
-                \posts_table_rows(Posts)
-            ])
-        ]
-    ).
-
-% Define the header of the posts table
-posts_table_header -->
-    html(tr([th('Title'), th('Author')])).
-
-% Define the rows of the posts table
-posts_table_rows([]) --> [].
-posts_table_rows([post(Title, Author, _Message)|Rest]) -->
-    html(tr([td(Title), td(Author)])),
-    posts_table_rows(Rest).
-
-*/
 home_page(_Request) :-
 
 
@@ -230,13 +147,13 @@ home_page(_Request) :-
             [ h1('Welcome to the Library'),
               div(style('display: flex; justify-content: center; align-items: center;'),
                [div(style('width: 20vw; height: 20vh; background-color: white; border: 2px dashed black; display: flex; align-items: center; justify-content: center; margin: 1vw;'),
-                  a(href('/books'), 'BORROW')),
+                  a(href('/books'), 'Book List')),
                 div(style('width: 20vw; height: 20vh; background-color: white; border: 2px dashed black; display: flex; align-items: center; justify-content: center; margin: 1vw;'),
                   a(href('/checkout'), 'CHECK OUT'))
                ]),
               div(style('display: flex; justify-content: center; align-items: center;'),
                [div(style('width: 42vw; height: 20vh; background-color: white; border: 2px dashed black; display: flex; align-items: center; justify-content: center; margin: 1vw;'),
-                  a(href('/search'), 'BOOK LIST'))
+                  a(href('/search'), 'Usr Board'))
                ])
               %div([style('font-size: 1.5em;')], [StatusMessage])
             ])
@@ -247,21 +164,114 @@ retract_borrower(Name, Phone) :-
 */
 
 
-%Borrow
-books_page(_Request) :-
+books_page(_Request):-
     findall((Barcode, Title, Author, Genre), book(Barcode, Title, Author, Genre), Books),
     reply_html_page(
         title('Book List'),
-        [ h1('Book List'),
-          \book_table(Books),
-          div([style='display: flex; justify-content: center; align-items: center;'],
-                              div([style='text-align: center; border: none;'],
-                                  form([action='http://localhost:8080'],
-                                       input([type=submit, value='Home']))
-                              )
-                          )
+        [   h1('Book List'),
+            \book_table(Books),
+            div([style='display: flex; flex-direction: column; align-items: center;'],
+                [
+                    div(style('width: 10vw; height: 5vh; background-color: white; margin: 1vw; display: flex; align-items: center;'),
+                        [   form([action='/title_search_0', method='POST'],
+                                [   input([name=input, type=text, style('margin-top: 5px;')]),
+                                    input([type=submit, value='title search'])
+                                ])
+                        ]
+                    ),
+                    div(style('width: 10vw; height: 5vh; background-color: white;  margin: 1vw; display: flex; align-items: center;'),
+                        [   form([action='/genre_search_0', method='POST'],
+                                [   input([name=input, type=text, style('margin-top: 5px;')]),
+                                    input([type=submit, value='genre search'])
+                                ])
+                        ]
+                    ),
+                     div(style('text-align: center; border: none; margin-bottom: 1vw;'),
+                        form([action='http://localhost:8080'],
+                            input([type=submit, value='Home']))
+                    )
+                ]
+            )
         ]
     ).
+
+
+
+
+
+title_search_0(Request) :-
+    http_parameters(Request, [input(Input, [])]),
+    (   Input \= '',
+        findall((Barcode, Title, Author, Genre, Status), (
+            loan_status(Barcode, Status),
+            book(Barcode, Title, Author, Genre),
+            sub_string(Title, _, _, _, Input),
+            book_status(Barcode)
+        ), BookList),
+        reply_html_page(
+            title('Selected Book Information'),
+            [   h1('Book Information'),
+                \book_table_2(BookList),
+                div([style='display: flex; justify-content: center; align-items: center;'],
+                    div([style='text-align: center; border: none;'],
+                        form([action='http://localhost:8080'], input([type=submit, value='Home']))
+                    )
+                ),
+                div([style='display: flex; justify-content: center; align-items: center;'],
+                    div([style='text-align: center; border: none;'],
+                        form([action='http://localhost:8080/books'], input([type=submit, value='Back']))
+                    )
+                ),
+                div([style='display: flex; justify-content: center; align-items: center;'],
+                    div([style='text-align: center; border: none;'],
+                        form([action='http://localhost:8080/checkout'], input([type=submit, value='Borrow section']))
+                    )
+                )
+            ]
+        )
+    ).
+
+
+
+:- http_handler(root(genre_search_0), genre_search_0, []).
+
+
+genre_search_0(Request) :-
+    http_parameters(Request, [input(Input, [])]),
+    (   Input \= '',
+        findall((Barcode, Title, Author, Genre, Status), (
+            loan_status(Barcode, Status),
+            book(Barcode, Title, Author, Genre),
+            % classification_genre(Genre), % classification_genre
+            Genre = Input, %
+            book_status(Barcode)
+        ), BookList),
+        reply_html_page(
+            title('Selected Book Information'),
+            [   h1('Book Information'),
+                \book_table_2(BookList),
+                div([style='display: flex; justify-content: center; align-items: center;'],
+                    div([style='text-align: center; border: none;'],
+                        form([action='http://localhost:8080'], input([type=submit, value='Home']))
+                    )
+                ),
+                div([style='display: flex; justify-content: center; align-items: center;'],
+                    div([style='text-align: center; border: none;'],
+                        form([action='http://localhost:8080/books'], input([type=submit, value='Back']))
+                    )
+                ),
+                div([style='display: flex; justify-content: center; align-items: center;'],
+                    div([style='text-align: center; border: none;'],
+                        form([action='http://localhost:8080/checkout'], input([type=submit, value='Borrow section']))
+                    )
+                )
+            ]
+        )
+    ).
+
+
+
+
 
 book_table(Books) -->
     html([
@@ -374,6 +384,7 @@ borrow_usr(Request) :-
             [ h1('Borrow Result'),
               p(Reply),
               form([action='/', method='GET'],
+
                    [ input([type=submit, value='Home'])
                    ])
             ]
@@ -488,3 +499,16 @@ book_rows_3([(Barcode, Title, Author, Genre, Status)|Rest]) -->
         td([style('border: 1px dotted black; padding: 8px; text-align: center;')], Status)
     ])),
     book_rows_3(Rest).
+
+:- initialization(server(8080)).
+
+
+
+
+
+
+
+
+
+
+

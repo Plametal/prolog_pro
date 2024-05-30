@@ -11,6 +11,24 @@
 8. 도서 반납하기(바코드 사용)			O
 9. 대출자 정보 데이터 베이스			O
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 -connecting python and prolog in python(2024-03-21)
 -look around prolog grammer example of fact, rule, query(2023-03-28)
 -set prolog html server(2024-05-16)
